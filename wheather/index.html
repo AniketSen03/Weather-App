@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wheather</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        text-transform: capitalize;
+    }
+
+    header {
+        display: flex;
+        justify-content: center;
+        margin-top: 2em;
+    }
+
+    #search {
+        border: transparent;
+        background-color: lightblue;
+        padding: 10px 90px;
+    }
+
+    .btn {
+        background-color: lightskyblue;
+        text-transform: uppercase;
+        border: transparent;
+        padding: 10px 20px;
+
+    }
+
+    .result {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .icon img {
+        margin: 18px;
+        height: 15em;
+    }
+
+    .temp {
+        font-size: 60px;
+        margin-bottom: -20px;
+        color: white;
+    }
+
+    .city {
+        font-size: 40px;
+        color: white;
+        margin-top: 1em;
+
+    }
+
+    .city span {
+        font-size: 15px;
+        color: white;
+
+    }
+
+    .lower {
+        display: flex;
+        font-size: 30px;
+        color: white;
+        justify-content: space-between;
+        line-height: 0.6;
+        margin-top: 1em;
+    }
+
+    body {
+        background-image: linear-gradient(90deg, rgb(77, 78, 82), rgb(0, 229, 255), rgb(255, 0, 136));
+        border: 3px dotted white;
+        width: 60%;
+        margin: 3em auto;
+        padding: 2em;
+    }
+
+    .humidity {
+        margin-top: 35px;
+    }
+
+    .wind-speed {
+        margin-top: 35px;
+    }
+
+    .error {
+        color: red;
+        font-size: 70px;
+        font-family: monospace;
+        display: none;
+    }
+</style>
+
+<body>
+    <header>
+        <input type="text" id="search" placeholder="Enter the city name">
+        <button class="btn"><i class="fa fa-search"></i></button>
+    </header>
+    <main>
+        <div class="result">
+            <div class="icon"><img
+                    src="https://cdn-icons-png.freepik.com/256/1163/1163661.png?ga=GA1.1.241287284.1711287276&"
+                    class="weather-icon">
+            </div>
+            <h1 class="error">City Is Not Found</h1>
+            <h1 class="temp">23°C</h1>
+            <h2 class="city">new york <span class="countries">US</span></h2>
+        </div>
+        <div class="lower">
+            <div>
+                <h3 class="hum">64%</h3>
+                <div class="humidity">Humidity</div>
+
+            </div>
+            <div>
+                <h3 class="wind">18 km/h </h3>
+                <div class="wind-speed">Wind speed</div>
+
+            </div>
+        </div>
+    </main>
+    <script>
+        const apikey = '012465ac485ad7e683c281c31518900c'
+        const apiurl = 'https://api.openweathermap.org/data/2.5/weather?units=metric&q='
+
+        let search = document.querySelector('#search')
+        let btn = document.querySelector('.btn')
+        let error = document.querySelector('.error')
+
+
+        async function checkwheater(city) 
+        {
+            const response = await fetch(apiurl + city + `&appid=${apikey}`)
+
+            if (response.status == 404) {
+                error.style.display = 'block'
+                document.querySelector('main').style.display = 'none'
+            }
+            else {
+
+                let data = await response.json()
+                
+                document.querySelector('.city').innerHTML = data.name
+                document.querySelector('.temp').innerHTML = Math.round(data.main.temp) + '°C'
+                document.querySelector('.hum').innerHTML = data.main.humidity + '%'
+                document.querySelector('.wind').innerHTML = data.wind.speed + 'km/h'
+
+
+                let icon = document.querySelector('.weather-icon')
+
+
+
+                if (data.weather[0].main == 'Clouds') {
+                    icon.src = 'images/clouds.png'
+                }
+                else if (data.weather[0].main == 'Clear') {
+                    icon.src = 'images/clear.png'
+
+                }
+                else if (data.weather[0].main == 'Haze') {
+                    icon.src = 'images/haze.png'
+
+                }
+
+                else if (data.weather[0].main == 'Rain') {
+                    icon.src = 'images/rain.png'
+
+                }
+
+                else if (data.weather[0].main == 'Drizzle') {
+                    icon.src = 'images/drizzle.png'
+
+                }
+                else if (data.weather[0].main == 'Mist') {
+                    icon.src = 'images/mist.png'
+
+                }
+                else if (data.weather[0].main == 'Snow') {
+                    icon.src = 'images/snow.png'
+
+                }
+                console.log(data);
+
+            }
+        }
+            btn.addEventListener('click', () => {
+                checkwheater(search.value)
+            })
+
+    </script>
+</body>
+
+</html>
